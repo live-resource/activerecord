@@ -1,12 +1,12 @@
 # LiveResource::ActiveRecord
 
-TODO: Write a gem description
+This gem provides the ActiveRecord LiveResource dependency.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'live_resource-active_record'
+    gem 'live_resource-activerecord'
 
 And then execute:
 
@@ -14,11 +14,61 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install live_resource-active_record
+    $ gem install live_resource-activerecord
+
+## Configuration
+
+You need to add this to the list of supported dependency types in your application config.
+
+```ruby
+# config/application.rb (or development.rb, test.rb etc)
+
+class Application < Rails::Application
+  ...
+  config.live_resource = {
+        dependency_types: [LiveResource::ActiveRecord::Dependency]
+  }
+end
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+# app/controllers/profiles_controller.rb
+
+class ProfilesController < ApplicationController
+  ...
+
+  # show.json
+  # {
+  #   name: @profile.name,
+  #   avatar: {
+  #     alt_text: @profile.avatar.alt_text,
+  #     url: avatar_url( @profile.avatar )
+  #   }
+  # }
+  def show
+    ...
+  end
+
+  live_resource :show do
+    identifier { |profile| profile_path(profile) }
+
+    # When a Profile instance is changed
+    depends_on(Profile) do |profile|
+      # Push an update for the resource belonging to the profile
+      push(profile)
+    end
+
+    # Since the view will change if the avatar changes, depend on that too
+    depends_on(Avatar) do |avatar|
+      push avatar.profile
+    end
+  end
+
+  ...
+end
+```
 
 ## Contributing
 
