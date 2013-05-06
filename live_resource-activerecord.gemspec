@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
 
-  #spec.add_dependency 'live_resource', '0.0.1'
+  spec.add_dependency 'live_resource'
   spec.add_dependency 'activerecord'
 
   spec.add_development_dependency "rspec"
