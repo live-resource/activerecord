@@ -13,10 +13,10 @@ module LiveResource
 
       attr_reader :resource, :model_class
 
-      def initialize(resource, model_class, proc, events = nil)
+      def initialize(resource, model_class, proc, *events)
         @model_class = model_class
 
-        if events && !events.empty?
+        if !events.empty?
           @events = events
         else
           @events = DEFAULT_EVENTS

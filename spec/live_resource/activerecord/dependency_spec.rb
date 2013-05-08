@@ -5,7 +5,7 @@ include LiveResource::ActiveRecord
 
 describe Dependency do
 
-  let(:dependency) { Dependency.new(resource, model_class, proc, events) }
+  let(:dependency) { Dependency.new(resource, model_class, proc, *events) }
 
   let(:resource) { double(LiveResource::Resource) }
 
