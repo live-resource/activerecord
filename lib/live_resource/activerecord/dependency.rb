@@ -5,7 +5,7 @@ module LiveResource
   module ActiveRecord
 
     class Dependency < LiveResource::Dependency
-      DEFAULT_EVENTS = [:after_destroy, :after_save]
+      DEFAULT_EVENTS = [:after_commit]
 
       def self.accepts_target?(target)
         !!(target < ::ActiveRecord::Base) # The < operator returns nil instead of false
