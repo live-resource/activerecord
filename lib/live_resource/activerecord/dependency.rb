@@ -30,15 +30,34 @@ module LiveResource
       end
 
       def observe(event)
-        dependency = self
-        model_class.class_eval do
-          send(event, dependency)
-        end
-      end
+        # Declare variables in method scope so they're preserved in the block
+        dependency          = self
+        subscribed_events   = @events
+        target              = @model_class
+        class_name          = "#{@resource.name}_dependency_on_#{@model_class}_for_#{@events.join('_')}"
 
-      ::ActiveRecord::Callbacks::CALLBACKS.each do |callback|
-        event = callback
-        define_method(callback) { |record| invoke(record, event) }
+        # Construct a new observer class
+        dependency_observer = Class.new(::ActiveRecord::Observer) do
+          observe target
+
+          # Give it a class name otherwise ActiveRecord will explode
+          @_class_name = class_name
+          class << self
+            def name
+              @_class_name
+            end
+          end
+
+          # Create callback methods on the observer class for each subscribed event
+          subscribed_events.each do |event_name|
+            define_method(event_name) do |*args|
+              dependency.invoke(args[0], event_name)
+            end
+          end
+        end
+
+        # Instantiating the observer class will make it hook itself up
+        dependency_observer.send :new
       end
     end
 

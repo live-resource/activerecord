@@ -18,19 +18,6 @@ describe Dependency do
   let(:events) { nil }
   let(:proc) { double(Proc) }
 
-  ActiveRecord::Callbacks::CALLBACKS.each do |callback|
-    context "##{callback}" do
-      subject { dependency.send(callback.to_sym, record) }
-
-      let(:record) { model_class.new }
-
-      it "should call #invoke with the ActiveRecord instance and the callback name" do
-        dependency.should_receive(:invoke).with(record, callback)
-        subject
-      end
-    end
-  end
-
   it "should pass the target to the superclass" do
     expect(dependency.target).to be model_class
   end
@@ -82,21 +69,6 @@ describe Dependency do
         end
         subject
       end
-    end
-  end
-
-  describe "#observe" do
-    subject { dependency.observe(event) }
-
-    let(:event) { :after_create }
-
-    before do
-      model_class.stub(event)
-    end
-
-    it "should register itself for callbacks" do
-      model_class.should_receive(event).with(dependency)
-      subject
     end
   end
 end
