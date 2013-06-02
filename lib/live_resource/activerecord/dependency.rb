@@ -34,7 +34,7 @@ module LiveResource
         dependency          = self
         subscribed_events   = @events
         target              = @model_class
-        class_name          = "#{@resource.name}_dependency_on_#{@model_class}_for_#{@events.join('_')}"
+        class_name          = "Observer_#{@resource.name}_dependency_on_#{@model_class}_for_#{@events.join('_')}"
 
         # Construct a new observer class
         dependency_observer = Class.new(::ActiveRecord::Observer) do
